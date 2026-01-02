@@ -184,6 +184,7 @@ function ScreenController(){
     form.addEventListener("submit", nameHandler);
     boardDiv.addEventListener("click",clickHandlerBoard);
     nextButton.addEventListener("click",nextRoundHandler);
+    restartButton.addEventListener("click",()=>{window.location.reload()});
     updateScreen();
 }
 
