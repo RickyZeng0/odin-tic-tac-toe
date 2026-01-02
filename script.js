@@ -14,7 +14,7 @@ function Gameboard(){
     const getBoard = () => boardArr;
     const addMark = (r , c, mark) => { boardArr[r][c] = mark};
     const printBoard = () => {console.log(boardArr)};
-    //if the cell is empty, then it is an empty to it
+    //if the cell is empty, then it is an valid move to it
     const checkValid = (r , c) => boardArr[r][c] == 0 ;
     //check if there any winning mark, if so return that mark, if no return 0
     const checkMark = () => {
@@ -26,11 +26,17 @@ function Gameboard(){
         }
         if(boardArr[0][0] == boardArr[1][1] && boardArr[1][1] == boardArr[2][2]) return boardArr[0][0];
         if(boardArr[0][2] == boardArr[1][1] && boardArr[1][1] == boardArr[2][0]) return boardArr[0][2];
-        return 0;
+        return false;
+    };
+    const checkFull = () => {
+        //find a row that contain an empty mark
+        let emptyMark = boardArr.find((row) =>  (row.find((mark)=>mark==0)) == 0 ) ;
+        if(emptyMark == undefined) return true;
+        return false;
     };
 
     //provide API
-    return {getBoard , addMark , printBoard , checkMark , checkValid};
+    return {getBoard , addMark , printBoard , checkMark , checkValid , checkFull};
 }
 
 function Player(name , mark){
@@ -46,9 +52,19 @@ function GameController(){
     const board = Gameboard();
     const players = [ Player("Player 1" , "X") , Player("Player 2" , "O")];
     let currentPlayer = players[0];
+    let state = "running";
+    let winner;
 
     const getCurrentPlayer = () => currentPlayer;
+    const getWinner = () => winner;
+    const getState = () => state;
     const getPlayerByMark = (mark) => players.find( (player) => player.mark == mark );
+    const updateState = () => {
+        winner = getPlayerByMark(board.checkMark());
+        if(winner != undefined) state = "win";
+        else if(winner == undefined && board.checkFull()) state = "tie";
+        else state = "running";
+    };
     const switchPlayer = () => {currentPlayer = (currentPlayer == players[0]? players[1]: players[0]) };
     const displayNewRound = () => {
         //display the newest board and tell the next one to play
@@ -56,6 +72,8 @@ function GameController(){
         console.log(`${currentPlayer.name} now is your turn`);
     };
     const playNewRound = (r,c) => {
+        //if end , don't do anything
+        if(state != "running") return;
         //make sure we don't repeat it
         if(!board.checkValid(r,c)) {
             console.log("Invalid move ! Don't repeat the same step !");
@@ -63,10 +81,15 @@ function GameController(){
         }
         console.log(`${currentPlayer.name} put on ${r},${c}`);
         board.addMark(r,c,currentPlayer.mark);
+        updateState();
         //check win
-        let winner = getPlayerByMark(board.checkMark());
-        if(winner != undefined){
+        if(state == "win"){
             console.log(`Game end ! winner is ${winner.name}`);
+            board.printBoard();
+            return;
+        }
+        else if(state == "tie"){
+            console.log(`Game end ! It is a tie`);
             board.printBoard();
             return;
         }
@@ -76,7 +99,7 @@ function GameController(){
 
     //init the game at start
     displayNewRound();
-    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard};
+    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState};
 }
 
 function ScreenController(){
