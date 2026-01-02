@@ -18,7 +18,17 @@ body{
 
 
 .board{
-    box-sizing: border-box;
+    /* As the size dont' include the border, the chile parent is ok to have 450/3 to just fit the parent*/ 
     width: 450px;
     height: 450px;
+    /* to have good alignment when there is some empty buttoon */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.board button{
+    box-sizing: border-box;
+    width: calc(450px/3);
+    height: calc(450px/3);
+
 }

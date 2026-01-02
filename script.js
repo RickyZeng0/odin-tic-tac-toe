@@ -1,31 +1,31 @@
 function Gameboard(){
     //set up the data
-    const board = [];
+    const boardArr = [];
     const row = 3;
     const col = 3;
 
     for(let i=0; i<row; i++){
-        board[i] = [];
+        boardArr[i] = [];
         for(let j=0; j<col; j++){
-            board[i].push(0);
+            boardArr[i].push(0);
         }
     }
     //set up the method
-    const getBoard = () => board;
-    const addMark = (r , c, mark) => { board[r][c] = mark};
-    const printBoard = () => {console.log(board)};
+    const getBoard = () => boardArr;
+    const addMark = (r , c, mark) => { boardArr[r][c] = mark};
+    const printBoard = () => {console.log(boardArr)};
     //if the cell is empty, then it is an empty to it
-    const checkValid = (r , c) => board[r][c] == 0 ;
+    const checkValid = (r , c) => boardArr[r][c] == 0 ;
     //check if there any winning mark, if so return that mark, if no return 0
     const checkMark = () => {
         for(let i=0; i<row; i++){
-            if(board[i][0] == board[i][1] && board[i][1] == board[i][2]) return board[i][0];
+            if(boardArr[i][0] == boardArr[i][1] && boardArr[i][1] == boardArr[i][2]) return boardArr[i][0];
         }
         for(let i=0; i<col; i++){
-            if(board[0][i] == board[1][i] && board[1][i] == board[2][i]) return board[0][i];
+            if(boardArr[0][i] == boardArr[1][i] && boardArr[1][i] == boardArr[2][i]) return boardArr[0][i];
         }
-        if(board[0][0] == board[1][1] && board[1][1] == board[2][2]) return board[0][0];
-        if(board[0][2] == board[1][1] && board[1][1] == board[2][0]) return board[0][2];
+        if(boardArr[0][0] == boardArr[1][1] && boardArr[1][1] == boardArr[2][2]) return boardArr[0][0];
+        if(boardArr[0][2] == boardArr[1][1] && boardArr[1][1] == boardArr[2][0]) return boardArr[0][2];
         return 0;
     };
 
@@ -76,7 +76,46 @@ function GameController(){
 
     //init the game at start
     displayNewRound();
-    return {getCurrentPlayer , playNewRound};
+    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard};
 }
 
-let game = GameController();
+function ScreenController(){
+    const game = GameController();
+    const messageDiv = document.querySelector(".message");
+    const boardDiv = document.querySelector(".board");
+
+    const updateScreen = () => {
+        const boardArr = game.getBoard();
+        const currentPlayer = game.getCurrentPlayer();
+
+        //clear the old content, remove the child, removing the text content has no effect
+        while(boardDiv.firstChild){
+            boardDiv.removeChild(boardDiv.firstChild);
+        }
+        //render the new content
+        messageDiv.textContent = `Now it's ${currentPlayer.name} turn !`;
+        boardArr.forEach( (row , r) => {
+            row.forEach((mark, c) => {
+                const markButton = document.createElement("button");
+                markButton.dataset.row = r;
+                markButton.dataset.col = c;
+                //display empty string but not 0, so it is different from o
+                markButton.textContent = boardArr[r][c] ? boardArr[r][c] : "";
+                boardDiv.appendChild(markButton);
+            } );
+        } );
+    };
+
+    function clickHandlerBoard(e){
+        const r = e.target.dataset.row;
+        const c = e.target.dataset.col;
+        if(r === undefined || c === undefined) return;
+        game.playNewRound(r,c);
+        updateScreen();
+    }
+
+    boardDiv.addEventListener("click",clickHandlerBoard);
+    updateScreen();
+}
+
+ScreenController();
