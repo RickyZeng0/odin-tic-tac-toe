@@ -52,12 +52,14 @@ function GameController(){
     const board = Gameboard();
     const players = [ Player("Player 1" , "X") , Player("Player 2" , "O")];
     let currentPlayer = players[0];
-    let state = "running";
+    let state = "preparing";
     let winner;
 
+    const start = () => {state = "running"};
     const getCurrentPlayer = () => currentPlayer;
     const getWinner = () => winner;
     const getState = () => state;
+    const setPlayerName = (index , name) => {players[index].name = name};
     const getPlayerByMark = (mark) => players.find( (player) => player.mark == mark );
     const updateState = () => {
         winner = getPlayerByMark(board.checkMark());
@@ -99,13 +101,14 @@ function GameController(){
 
     //init the game at start
     displayNewRound();
-    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState};
+    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState , setPlayerName ,start};
 }
 
 function ScreenController(){
     const game = GameController();
     const messageDiv = document.querySelector(".message");
     const boardDiv = document.querySelector(".board");
+    const form = document.querySelector("form");
 
     const updateScreen = () => {
         const boardArr = game.getBoard();
@@ -116,7 +119,8 @@ function ScreenController(){
             boardDiv.removeChild(boardDiv.firstChild);
         }
         //render the new content
-        if(game.getState() == "running") messageDiv.textContent = `Now it's ${currentPlayer.name} turn !`;
+        if(game.getState() == "preparing") messageDiv.textContent = `Please enter both player's name and click start button`;
+        else if(game.getState() == "running") messageDiv.textContent = `Now it's ${currentPlayer.name} turn !`;
         else if(game.getState() == "win") messageDiv.textContent = `The game has end, ${game.getWinner().name} win !`;
         else if(game.getState() == "tie") messageDiv.textContent = `The game has end, It is an tie !`;
         boardArr.forEach( (row , r) => {
@@ -138,7 +142,20 @@ function ScreenController(){
         game.playNewRound(r,c);
         updateScreen();
     }
+
+    function nameHandler(e){
+        e.preventDefault();
+        //should put after preventDefault, otherwise reclick it will cause refresh of page
+        if(game.getState() != "preparing") return;
+        const formData = new FormData(form);
+        game.setPlayerName(0, formData.get("p1Name"));
+        game.setPlayerName(1, formData.get("p2Name"));
+        game.start();
+        updateScreen();
+    }
+
     //after the button trigger click effect, the effect will be forward to div and be captured
+    form.addEventListener("submit", nameHandler);
     boardDiv.addEventListener("click",clickHandlerBoard);
     updateScreen();
 }
