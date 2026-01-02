@@ -34,9 +34,11 @@ function Gameboard(){
         if(emptyMark == undefined) return true;
         return false;
     };
+    //the mark here is copy by value, change the mark has no effect on the actual array
+    const reset = () => {boardArr.forEach( (row)=>{ row.forEach( (mark,index)=>{row[index]=0;}  )} )};
 
     //provide API
-    return {getBoard , addMark , printBoard , checkMark , checkValid , checkFull};
+    return {getBoard , addMark , printBoard , checkMark , checkValid , checkFull ,reset};
 }
 
 function Player(name , mark){
@@ -56,6 +58,13 @@ function GameController(){
     let winner;
 
     const start = () => {state = "running"};
+    const setNextRound = () => {
+        board.reset();
+        currentPlayer = players[0];
+        state = "running";
+        console.log("after setting");
+        board.printBoard();
+    };
     const getCurrentPlayer = () => currentPlayer;
     const getWinner = () => winner;
     const getState = () => state;
@@ -101,7 +110,7 @@ function GameController(){
 
     //init the game at start
     displayNewRound();
-    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState , setPlayerName ,start};
+    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState , setPlayerName ,start , setNextRound};
 }
 
 function ScreenController(){
@@ -109,6 +118,9 @@ function ScreenController(){
     const messageDiv = document.querySelector(".message");
     const boardDiv = document.querySelector(".board");
     const form = document.querySelector("form");
+    //remember to query the correct element!
+    const nextButton = document.querySelector(".buttons button:nth-child(2)");
+    const restartButton = document.querySelector(".buttons button:nth-child(3)");
 
     const updateScreen = () => {
         const boardArr = game.getBoard();
@@ -143,6 +155,14 @@ function ScreenController(){
         updateScreen();
     }
 
+    function nextRoundHandler(){
+        let state = game.getState();
+        if(state == "win" ||  state == "tie"){
+            game.setNextRound();
+            updateScreen();
+        }
+    }
+
     function nameHandler(e){
         e.preventDefault();
         //should put after preventDefault, otherwise reclick it will cause refresh of page
@@ -157,6 +177,7 @@ function ScreenController(){
     //after the button trigger click effect, the effect will be forward to div and be captured
     form.addEventListener("submit", nameHandler);
     boardDiv.addEventListener("click",clickHandlerBoard);
+    nextButton.addEventListener("click",nextRoundHandler);
     updateScreen();
 }
 
