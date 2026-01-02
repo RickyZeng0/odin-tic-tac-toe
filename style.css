@@ -2,8 +2,28 @@ body{
     margin: 0px;
 }
 
-*{
+.game , .info {
     border: 1px solid black;
+}
+
+label{
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.input{
+    margin: 10px;
+    display: flex;
+    gap: 6px;
+}
+
+.player1-score , .player2-score{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
 }
 
 .container{
@@ -14,8 +34,16 @@ body{
     justify-content: center;
     align-items: center;
     gap: 30px;
+    background-color: aliceblue;
 }
 
+
+.game {
+    background-color: rgb(80, 80, 248);
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
 
 .board{
     /* As the size dont' include the border, the chile parent is ok to have 450/3 to just fit the parent*/ 
@@ -30,5 +58,18 @@ body{
     box-sizing: border-box;
     width: calc(450px/3);
     height: calc(450px/3);
+    background-color: white;
+    font-size: 50px;
+}
 
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.buttons button{
+    border-radius: 10px;
+    padding: 6px 10px;
+    background-color: rgb(2, 147, 220);
+    color: white;
 }
