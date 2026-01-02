@@ -116,14 +116,16 @@ function ScreenController(){
             boardDiv.removeChild(boardDiv.firstChild);
         }
         //render the new content
-        messageDiv.textContent = `Now it's ${currentPlayer.name} turn !`;
+        if(game.getState() == "running") messageDiv.textContent = `Now it's ${currentPlayer.name} turn !`;
+        else if(game.getState() == "win") messageDiv.textContent = `The game has end, ${game.getWinner().name} win !`;
+        else if(game.getState() == "tie") messageDiv.textContent = `The game has end, It is an tie !`;
         boardArr.forEach( (row , r) => {
             row.forEach((mark, c) => {
                 const markButton = document.createElement("button");
                 markButton.dataset.row = r;
                 markButton.dataset.col = c;
                 //display empty string but not 0, so it is different from o
-                markButton.textContent = boardArr[r][c] ? boardArr[r][c] : "";
+                markButton.textContent = mark ? mark : "";
                 boardDiv.appendChild(markButton);
             } );
         } );
@@ -136,7 +138,7 @@ function ScreenController(){
         game.playNewRound(r,c);
         updateScreen();
     }
-
+    //after the button trigger click effect, the effect will be forward to div and be captured
     boardDiv.addEventListener("click",clickHandlerBoard);
     updateScreen();
 }
