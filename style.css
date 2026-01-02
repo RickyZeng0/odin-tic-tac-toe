@@ -2,11 +2,16 @@ body{
     margin: 0px;
 }
 
+.hidden{
+    display: none;
+}
+
 .game , .info {
     border: 1px solid black;
 }
 
 label{
+    text-align: center;
     font-weight: bold;
     font-size: 30px;
 }
@@ -14,7 +19,9 @@ label{
 .input{
     margin: 10px;
     display: flex;
+    justify-content: center;
     gap: 6px;
+    min-width: 150px;
 }
 
 .player1-score , .player2-score{

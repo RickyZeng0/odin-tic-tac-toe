@@ -125,6 +125,9 @@ function ScreenController(){
     const restartButton = document.querySelector(".buttons button:nth-child(3)");
     const p1ScoreDiv = document.querySelector(".player1-score");
     const p2ScoreDiv = document.querySelector(".player2-score");
+    const pInput = document.querySelectorAll("input");
+    const pLable = document.querySelectorAll("label");
+
 
     const updateScreen = () => {
         const boardArr = game.getBoard();
@@ -173,7 +176,10 @@ function ScreenController(){
         e.preventDefault();
         //should put after preventDefault, otherwise reclick it will cause refresh of page
         if(game.getState() != "preparing") return;
+        pInput.forEach((element) => {element.classList.add("hidden")} );
         const formData = new FormData(form);
+        pLable[0].textContent =  formData.get("p1Name");
+        pLable[1].textContent =  formData.get("p2Name");
         game.setPlayerName(0, formData.get("p1Name"));
         game.setPlayerName(1, formData.get("p2Name"));
         game.start();
