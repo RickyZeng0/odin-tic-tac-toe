@@ -65,6 +65,7 @@ function GameController(){
         console.log("after setting");
         board.printBoard();
     };
+    const getScores = () => [players[0].getScore(), players[1].getScore()];
     const getCurrentPlayer = () => currentPlayer;
     const getWinner = () => winner;
     const getState = () => state;
@@ -97,6 +98,7 @@ function GameController(){
         if(state == "win"){
             console.log(`Game end ! winner is ${winner.name}`);
             board.printBoard();
+            winner.addScore();
             return;
         }
         else if(state == "tie"){
@@ -110,7 +112,7 @@ function GameController(){
 
     //init the game at start
     displayNewRound();
-    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState , setPlayerName ,start , setNextRound};
+    return {getCurrentPlayer , playNewRound , getBoard: board.getBoard ,getWinner , getState , setPlayerName ,start , setNextRound ,getScores};
 }
 
 function ScreenController(){
@@ -121,6 +123,8 @@ function ScreenController(){
     //remember to query the correct element!
     const nextButton = document.querySelector(".buttons button:nth-child(2)");
     const restartButton = document.querySelector(".buttons button:nth-child(3)");
+    const p1ScoreDiv = document.querySelector(".player1-score");
+    const p2ScoreDiv = document.querySelector(".player2-score");
 
     const updateScreen = () => {
         const boardArr = game.getBoard();
@@ -131,6 +135,8 @@ function ScreenController(){
             boardDiv.removeChild(boardDiv.firstChild);
         }
         //render the new content
+        p1ScoreDiv.textContent = game.getScores()[0] ;
+        p2ScoreDiv.textContent = game.getScores()[1] ;
         if(game.getState() == "preparing") messageDiv.textContent = `Please enter both player's name and click start button`;
         else if(game.getState() == "running") messageDiv.textContent = `Now it's ${currentPlayer.name} turn !`;
         else if(game.getState() == "win") messageDiv.textContent = `The game has end, ${game.getWinner().name} win !`;
