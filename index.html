@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <p>hi</p>
-    
+    <div class="container">
+        <form action="" id="user-name"></form>
+        <div class="info">
+            <label for="player1-name">Player 1</label>
+            <input type="text" form="user-name" id="player1-name" name="p1Name" required>
+            <div class="player1-score">0</div>
+        </div>
+
+        <div class="game">
+            <div class="message">Now it's your turn !</div>
+            <div class="board"></div>
+            <div class="buttons">               
+                <button form="user-name">Start</button>
+                <button>Next Round</button>
+                <button>Restart</button>
+            </div>
+        </div>
+
+        <div class="info">
+            <label for="player2-name">Player 2</label>
+            <input type="text" form="user-name" id="player2-name" name="p2Name" required>
+            <div class="player2-score">0</div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
